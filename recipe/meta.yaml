@@ -23,6 +23,10 @@ requirements:
   run:
     - python
 
+{% set deselect_tests = "" %}
+# E       OSError: [WinError 10022] An invalid argument was supplied
+{% set deselect_tests = deselect_tests + " --deselect=test_sniffio.py::test_curio" %}  # [win and py<312]
+
 test:
   imports:
     - sniffio
@@ -34,7 +38,7 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest --pyargs sniffio._tests
+    - pytest --pyargs sniffio._tests {{ deselect_tests }}
 
 about:
   home: https://github.com/python-trio/sniffio
