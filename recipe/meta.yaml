@@ -27,10 +27,14 @@ test:
   imports:
     - sniffio
     - sniffio._tests
-  commands:
-    - pip check
   requires:
     - pip
+    - pytest
+    - curio
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest --pyargs sniffio._tests
 
 about:
   home: https://github.com/python-trio/sniffio
