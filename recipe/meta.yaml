@@ -1,13 +1,13 @@
 {% set name = "sniffio" %}
-{% set version = "1.3.0" %}
+{% set version = "1.3.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc
 
 build:
   number: 0
@@ -18,19 +18,27 @@ requirements:
   host:
     - pip
     - python
-    - setuptools
-    - wheel
+    - setuptools >=64
+    - setuptools-scm >=6.4
   run:
     - python
+
+{% set deselect_tests = "" %}
+# E       OSError: [WinError 10022] An invalid argument was supplied
+{% set deselect_tests = deselect_tests + " --deselect=test_sniffio.py::test_curio" %}  # [win and py<312]
 
 test:
   imports:
     - sniffio
     - sniffio._tests
-  commands:
-    - pip check
   requires:
     - pip
+    - pytest
+    - curio
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest --pyargs sniffio._tests {{ deselect_tests }}
 
 about:
   home: https://github.com/python-trio/sniffio
