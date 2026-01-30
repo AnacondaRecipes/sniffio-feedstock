@@ -19,6 +19,8 @@ requirements:
     - pip
     - python
     - setuptools >=64
+    # https://github.com/pypa/setuptools/issues/4483
+    - packaging >=22.0
     - setuptools-scm >=6.4
   run:
     - python
